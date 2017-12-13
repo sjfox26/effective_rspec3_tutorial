@@ -11,10 +11,12 @@ module ExpenseTracker
     end
 
     let (:ledger) { instance_double('ExpenseTracker::Ledger')}
+    let(:parsed) { JSON.parse(last_response.body) }
 
     describe 'POST /expenses' do
       context 'when the expense is recorded successfully' do
         let(:expense) { { 'some' => 'data' } }
+
 
           before do
             allow(ledger).to receive(:record)
@@ -22,10 +24,12 @@ module ExpenseTracker
                                  .and_return(RecordResult.new(true, 417, nil))
           end
 
+
+
         it 'returns the expense id' do
           post '/expenses', JSON.generate(expense)
 
-          parsed = JSON.parse(last_response.body)
+          #parsed = JSON.parse(last_response.body)
           expect(parsed).to include('expense_id' => 417 )
         end
 
@@ -47,7 +51,7 @@ module ExpenseTracker
         it 'returns an error message' do
           post '/expenses', JSON.generate(expense)
 
-          parsed = JSON.parse(last_response.body)
+          #parsed = JSON.parse(last_response.body)
           expect(parsed).to include('error' => 'Expense incomplete')
         end
 
